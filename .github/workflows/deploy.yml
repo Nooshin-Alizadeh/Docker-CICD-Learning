@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    # ۱. دریافت سورس‌کد
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # ۲. تنظیم دات‌نت و تست کدها
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore & Test
+      run: |
+        dotnet restore MyApi/MyApi.csproj
+        dotnet build MyApi/MyApi.csproj --no-restore
+
+    # ۳. ورود به Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # ۴. ساخت و ارسال ایمیج داکر
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./MyApi
+        file: ./MyApi/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/myapi:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/myapi:${{ github.sha }}
