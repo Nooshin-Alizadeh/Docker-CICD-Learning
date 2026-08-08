@@ -1,0 +1,12 @@
+
+
+services:
+  myapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dotnet_myapi
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
