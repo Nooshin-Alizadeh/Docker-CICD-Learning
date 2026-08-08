@@ -81,6 +81,10 @@ The pipeline will eventually include:
 * [ ] Docker Registry
 * [ ] Automated deployment
 
+## CI/CD Test
+
+Testing GitHub Actions.
+
 ## 📌 Useful Docker Commands
 
 ```bash
